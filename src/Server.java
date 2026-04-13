@@ -130,15 +130,6 @@ public class Server {
                 i--;
                 numbers.push(Double.parseDouble(num.toString()));
             }
-            else if (c == '(') {
-                operators.push(c);
-            }
-            else if (c == ')') {
-                while (operators.peek() != '(') {
-                    numbers.push(applyOperation(operators.pop(), numbers.pop(), numbers.pop()));
-                }
-                operators.pop();
-            }
             else if (c == '+' || c == '-' || c == '*' || c == '/') {
                 while (!operators.isEmpty() && hasPrecedence(c, operators.peek())) {
                     numbers.push(applyOperation(operators.pop(), numbers.pop(), numbers.pop()));
@@ -146,14 +137,15 @@ public class Server {
                 operators.push(c);
             }
         }
+
         while (!operators.isEmpty()) {
             numbers.push(applyOperation(operators.pop(), numbers.pop(), numbers.pop()));
         }
+
         return numbers.pop();
     }
 
     private static boolean hasPrecedence(char op1, char op2) {
-        if (op2 == '(' || op2 == ')') return false;
         if ((op1 == '*' || op1 == '/') && (op2 == '+' || op2 == '-')) return false;
         return true;
     }
