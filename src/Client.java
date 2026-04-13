@@ -12,7 +12,7 @@ public class Client{
         System.out.println("What port number do you want to connect to?");
         int portNum = scanner.nextInt();
         try(Socket clientSocket = new Socket("localhost", portNum)) {
-            System.out.println("Client started: Enter a message");
+            System.out.println("Client started: Enter a math calculation");
             // Set up streams
             BufferedReader inFromUser = new BufferedReader(new InputStreamReader(System.in));
             BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
