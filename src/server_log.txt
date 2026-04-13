@@ -63,3 +63,23 @@
 [2026-04-13 00:06:25] Marc: Sent calculation request: 5 + 3
 [2026-04-13 00:06:25] Marc: Calculation completed: 5 + 3 = 8.0
 [2026-04-13 00:06:37] Marc: Disconnected. Session duration: 14 seconds
+[2026-04-13 00:16:14] SERVER: Math Server started
+[2026-04-13 00:16:21] Marc: Connected from /127.0.0.1
+[2026-04-13 00:16:25] Marc: Sent calculation request: 5 + 3
+[2026-04-13 00:16:25] Marc: Calculation completed: 5 + 3 = 8.0
+[2026-04-13 00:16:28] Marc: Sent calculation request: 1 + 1
+[2026-04-13 00:16:28] Marc: Calculation completed: 1 + 1 = 2.0
+[2026-04-13 00:36:52] Marc: Disconnected. Session duration: 1231 seconds
+[2026-04-13 00:37:04] Marc: Connected from /127.0.0.1
+[2026-04-13 00:37:10] Marc: Sent calculation request: 9 + 100
+[2026-04-13 00:37:10] Marc: Calculation completed: 9 + 100 = 109.0
+[2026-04-13 00:37:12] Marc: Disconnected. Session duration: 8 seconds
+[2026-04-13 00:37:20] Marc: Connected from /127.0.0.1
+[2026-04-13 00:37:29] Bob: Connected from /127.0.0.1
+[2026-04-13 00:37:30] Bob: Sent calculation request: 2 + 2
+[2026-04-13 00:37:30] Bob: Calculation completed: 2 + 2 = 4.0
+[2026-04-13 00:37:35] Marc: Sent calculation request: 5+ 5
+[2026-04-13 00:37:35] Marc: Calculation completed: 5+ 5 = 10.0
+[2026-04-13 00:37:41] Marc: Disconnected. Session duration: 20 seconds
+[2026-04-13 00:37:46] Bob: Disconnected. Session duration: 17 seconds
+[2026-04-13 00:42:39] SERVER: Math Server started

@@ -3,32 +3,19 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
-import java.util.concurrent.*;
+import java.util.Stack;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class Server {
-    private static final Map<String, ClientInfo> connectedClients = new ConcurrentHashMap<>();
     private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-
-    // Class to store client information
-    static class ClientInfo {
-        String name;
-        String ipAddress;
-        LocalDateTime connectTime;
-
-        ClientInfo(String name, String ipAddress, LocalDateTime connectTime) {
-            this.name = name;
-            this.ipAddress = ipAddress;
-            this.connectTime = connectTime;
-        }
-    }
 
     public static void main(String[] args) {
         ExecutorService threadPool = Executors.newFixedThreadPool(10);
 
         try (ServerSocket welcomeSocket = new ServerSocket(1234)) {
             System.out.println("Server is online!");
-            logActivity("SERVER", "Math Server started");
+            logActivity("SERVER", "Server started");
 
             while (true) {
                 Socket connectionSocket = welcomeSocket.accept();
@@ -51,24 +38,19 @@ public class Server {
             String sentence;
             while ((sentence = inFromClient.readLine()) != null) {
 
-                // First message is always JOIN
                 if (sentence.startsWith("JOIN:")) {
                     clientName = sentence.substring(5).trim();
-                    ClientInfo clientInfo = new ClientInfo(clientName, connectionSocket.getInetAddress().toString(), connectTime);
-                    connectedClients.put(clientName, clientInfo);
 
                     outFromServer.println("ACK:Welcome " + clientName + "! Connection successful.");
                     logActivity(clientName, "Connected from " + connectionSocket.getInetAddress());
                     System.out.println("Client: " + clientName + " (" + connectionSocket.getInetAddress() + ") connected!");
 
                 }
-                // CLOSE message to disconnect
                 else if (sentence.equals("CLOSE")) {
                     if (clientName != null) {
                         LocalDateTime disconnectTime = LocalDateTime.now();
                         long duration = java.time.Duration.between(connectTime, disconnectTime).toSeconds();
 
-                        connectedClients.remove(clientName);
                         outFromServer.println("ACK:Connection closed. Goodbye " + clientName + "!");
 
                         logActivity(clientName, "Disconnected. Session duration: " + duration + " seconds");
@@ -76,7 +58,6 @@ public class Server {
                         break;
                     }
                 }
-                // All other messages are calculations
                 else {
                     if (clientName != null) {
                         String expression = sentence.trim();
@@ -84,7 +65,6 @@ public class Server {
                         logActivity(clientName, "Sent calculation request: " + expression);
                         System.out.println("Message received from Client " + clientName + ": " + expression);
 
-                        // Process calculation immediately (in order)
                         try {
                             double result = evaluateExpression(expression);
                             outFromServer.println("RESULT:" + result);
@@ -101,9 +81,6 @@ public class Server {
             System.err.println("Exception: Client connection error - " + e.getMessage());
         } finally {
             try {
-                if (clientName != null) {
-                    connectedClients.remove(clientName);
-                }
                 connectionSocket.close();
             } catch (Exception ignored) {}
         }
@@ -162,7 +139,6 @@ public class Server {
         return 0;
     }
 
-    // Log activity to file
     private static void logActivity(String clientName, String activity) {
         try (FileWriter fw = new FileWriter("server_log.txt", true);
              BufferedWriter bw = new BufferedWriter(fw);
