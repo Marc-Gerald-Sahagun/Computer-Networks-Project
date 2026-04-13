@@ -1,48 +1,186 @@
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+import java.util.concurrent.*;
 
 public class Server {
-    public static void main (String[] args) {
+    private static final Map<String, ClientInfo> connectedClients = new ConcurrentHashMap<>();
+    private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+    // Class to store client information
+    static class ClientInfo {
+        String name;
+        String ipAddress;
+        LocalDateTime connectTime;
+
+        ClientInfo(String name, String ipAddress, LocalDateTime connectTime) {
+            this.name = name;
+            this.ipAddress = ipAddress;
+            this.connectTime = connectTime;
+        }
+    }
+
+    public static void main(String[] args) {
         ExecutorService threadPool = Executors.newFixedThreadPool(10);
-        try(ServerSocket welcomeSocket = new ServerSocket(1234)) {
+
+        try (ServerSocket welcomeSocket = new ServerSocket(1234)) {
             System.out.println("Server is online!");
-            while(true) {
+            logActivity("SERVER", "Math Server started");
+
+            while (true) {
                 Socket connectionSocket = welcomeSocket.accept();
                 threadPool.submit(() -> handleClient(connectionSocket));
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
-        }
-        finally{
+        } finally {
             threadPool.shutdown();
         }
     }
+
     public static void handleClient(Socket connectionSocket) {
-        try(BufferedReader inFromClient = new BufferedReader(new InputStreamReader(connectionSocket.getInputStream()));
-            PrintWriter outFromServer = new PrintWriter(connectionSocket.getOutputStream(), true);) {
-            System.out.println("Client: " + connectionSocket.getInetAddress() + " connected!");
+        String clientName = null;
+        LocalDateTime connectTime = LocalDateTime.now();
+
+        try (BufferedReader inFromClient = new BufferedReader(new InputStreamReader(connectionSocket.getInputStream()));
+             PrintWriter outFromServer = new PrintWriter(connectionSocket.getOutputStream(), true)) {
 
             String sentence;
-            while((sentence = inFromClient.readLine()) != null && !sentence.equalsIgnoreCase("exit")) {
-                System.out.println(sentence);
-                outFromServer.println(sentence.toUpperCase());
+            while ((sentence = inFromClient.readLine()) != null) {
+
+                // First message is always JOIN
+                if (sentence.startsWith("JOIN:")) {
+                    clientName = sentence.substring(5).trim();
+                    ClientInfo clientInfo = new ClientInfo(clientName, connectionSocket.getInetAddress().toString(), connectTime);
+                    connectedClients.put(clientName, clientInfo);
+
+                    outFromServer.println("ACK:Welcome " + clientName + "! Connection successful.");
+                    logActivity(clientName, "Connected from " + connectionSocket.getInetAddress());
+                    System.out.println("Client: " + clientName + " (" + connectionSocket.getInetAddress() + ") connected!");
+
+                }
+                // CLOSE message to disconnect
+                else if (sentence.equals("CLOSE")) {
+                    if (clientName != null) {
+                        LocalDateTime disconnectTime = LocalDateTime.now();
+                        long duration = java.time.Duration.between(connectTime, disconnectTime).toSeconds();
+
+                        connectedClients.remove(clientName);
+                        outFromServer.println("ACK:Connection closed. Goodbye " + clientName + "!");
+
+                        logActivity(clientName, "Disconnected. Session duration: " + duration + " seconds");
+                        System.out.println("Client " + clientName + " disconnected. Duration: " + duration + " seconds");
+                        break;
+                    }
+                }
+                // All other messages are calculations
+                else {
+                    if (clientName != null) {
+                        String expression = sentence.trim();
+
+                        logActivity(clientName, "Sent calculation request: " + expression);
+                        System.out.println("Message received from Client " + clientName + ": " + expression);
+
+                        // Process calculation immediately (in order)
+                        try {
+                            double result = evaluateExpression(expression);
+                            outFromServer.println("RESULT:" + result);
+                            logActivity(clientName, "Calculation completed: " + expression + " = " + result);
+                        } catch (Exception e) {
+                            outFromServer.println("ERROR:Invalid expression");
+                            logActivity(clientName, "Invalid expression: " + expression);
+                        }
+                    }
+                }
             }
-            System.out.println("Client " + connectionSocket.getInetAddress() + " disconnected." );
 
         } catch (Exception e) {
-            System.err.println("Exception: Client connection error");
-        }
-        finally {
-            try{
+            System.err.println("Exception: Client connection error - " + e.getMessage());
+        } finally {
+            try {
+                if (clientName != null) {
+                    connectedClients.remove(clientName);
+                }
                 connectionSocket.close();
-            }
-            catch (Exception ignored) {}
+            } catch (Exception ignored) {}
         }
+    }
 
+    private static double evaluateExpression(String expression) {
+        expression = expression.replaceAll("\\s+", "");
+        return evaluate(expression);
+    }
+
+    private static double evaluate(String expression) {
+        Stack<Double> numbers = new Stack<>();
+        Stack<Character> operators = new Stack<>();
+
+        for (int i = 0; i < expression.length(); i++) {
+            char c = expression.charAt(i);
+
+            if (Character.isDigit(c) || c == '.') {
+                StringBuilder num = new StringBuilder();
+                while (i < expression.length() &&
+                        (Character.isDigit(expression.charAt(i)) || expression.charAt(i) == '.')) {
+                    num.append(expression.charAt(i++));
+                }
+                i--;
+                numbers.push(Double.parseDouble(num.toString()));
+            }
+            else if (c == '(') {
+                operators.push(c);
+            }
+            else if (c == ')') {
+                while (operators.peek() != '(') {
+                    numbers.push(applyOperation(operators.pop(), numbers.pop(), numbers.pop()));
+                }
+                operators.pop();
+            }
+            else if (c == '+' || c == '-' || c == '*' || c == '/') {
+                while (!operators.isEmpty() && hasPrecedence(c, operators.peek())) {
+                    numbers.push(applyOperation(operators.pop(), numbers.pop(), numbers.pop()));
+                }
+                operators.push(c);
+            }
+        }
+        while (!operators.isEmpty()) {
+            numbers.push(applyOperation(operators.pop(), numbers.pop(), numbers.pop()));
+        }
+        return numbers.pop();
+    }
+
+    private static boolean hasPrecedence(char op1, char op2) {
+        if (op2 == '(' || op2 == ')') return false;
+        if ((op1 == '*' || op1 == '/') && (op2 == '+' || op2 == '-')) return false;
+        return true;
+    }
+
+    private static double applyOperation(char op, double b, double a) {
+        switch (op) {
+            case '+': return a + b;
+            case '-': return a - b;
+            case '*': return a * b;
+            case '/':
+                if (b == 0) throw new ArithmeticException("Division by zero");
+                return a / b;
+        }
+        return 0;
+    }
+
+    // Log activity to file
+    private static void logActivity(String clientName, String activity) {
+        try (FileWriter fw = new FileWriter("server_log.txt", true);
+             BufferedWriter bw = new BufferedWriter(fw);
+             PrintWriter out = new PrintWriter(bw)) {
+
+            String timestamp = LocalDateTime.now().format(dateFormatter);
+            out.println("[" + timestamp + "] " + clientName + ": " + activity);
+
+        } catch (IOException e) {
+            System.err.println("Error writing to log file: " + e.getMessage());
+        }
     }
 }

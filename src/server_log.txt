@@ -1,0 +1,46 @@
+[2026-04-12 23:45:13] SERVER: Math Server started
+[2026-04-12 23:45:21] marc: Connected from /127.0.0.1
+[2026-04-12 23:45:25] marc: Sent calculation request: 5 + 3
+[2026-04-12 23:45:25] marc: Calculation completed: 5 + 3 = 8.0
+[2026-04-12 23:46:15] marc: Sent calculation request: close
+[2026-04-12 23:46:15] marc: Invalid expression: close
+[2026-04-12 23:46:17] marc: Disconnected. Session duration: 56 seconds
+[2026-04-12 23:47:02] Marc: Connected from /127.0.0.1
+[2026-04-12 23:47:04] Marc: Disconnected. Session duration: 2 seconds
+[2026-04-12 23:47:20] Marc: Connected from /127.0.0.1
+[2026-04-12 23:47:22] Marc: Disconnected. Session duration: 1 seconds
+[2026-04-12 23:48:29] CLOSE: Connected from /127.0.0.1
+[2026-04-12 23:48:32] CLOSE: Sent calculation request: C:PSE
+[2026-04-12 23:48:32] CLOSE: Invalid expression: C:PSE
+[2026-04-12 23:48:33] CLOSE: Disconnected. Session duration: 4 seconds
+[2026-04-12 23:51:08] SERVER: Math Server started
+[2026-04-12 23:51:15] Marc: Connected from /127.0.0.1
+[2026-04-12 23:51:22] Marc: Disconnected. Session duration: 7 seconds
+[2026-04-12 23:52:21] Bob: Connected from /127.0.0.1
+[2026-04-12 23:52:29] Bob: Sent calculation request: 5 + 3 * 2
+[2026-04-12 23:52:29] Bob: Calculation completed: 5 + 3 * 2 = 11.0
+[2026-04-12 23:56:06] SERVER: Math Server started
+[2026-04-12 23:56:21] Marc: Connected from /127.0.0.1
+[2026-04-12 23:56:24] Marc: Disconnected. Session duration: 3 seconds
+[2026-04-12 23:56:44] Marc: Connected from /127.0.0.1
+[2026-04-12 23:56:48] Marc: Sent calculation request: 5 + 3
+[2026-04-12 23:56:48] Marc: Calculation completed: 5 + 3 = 8.0
+[2026-04-12 23:56:57] Marc: Disconnected. Session duration: 12 seconds
+[2026-04-12 23:57:03] Marc: Connected from /127.0.0.1
+[2026-04-12 23:57:07] Marc: Sent calculation request: 2 + 5
+[2026-04-12 23:57:07] Marc: Calculation completed: 2 + 5 = 7.0
+[2026-04-12 23:57:15] Marc: Sent calculation request: 5 + 3 * 2
+[2026-04-12 23:57:15] Marc: Calculation completed: 5 + 3 * 2 = 11.0
+[2026-04-12 23:57:21] Marc: Sent calculation request: 6 / 3 * 2
+[2026-04-12 23:57:21] Marc: Calculation completed: 6 / 3 * 2 = 4.0
+[2026-04-12 23:58:44] Marc: Disconnected. Session duration: 100 seconds
+[2026-04-12 23:59:22] SERVER: Math Server started
+[2026-04-12 23:59:28] Marc: Connected from /127.0.0.1
+[2026-04-12 23:59:31] Marc: Sent calculation request: 5 + 3
+[2026-04-12 23:59:31] Marc: Invalid expression: 5 + 3
+[2026-04-13 00:00:26] Marc: Disconnected. Session duration: 57 seconds
+[2026-04-13 00:00:32] SERVER: Math Server started
+[2026-04-13 00:00:37] Marc: Connected from /127.0.0.1
+[2026-04-13 00:00:39] Marc: Sent calculation request: 5 + 3
+[2026-04-13 00:00:39] Marc: Calculation completed: 5 + 3 = 8.0
+[2026-04-13 00:00:44] Marc: Disconnected. Session duration: 7 seconds

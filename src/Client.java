@@ -1,33 +1,64 @@
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.util.Scanner;
+import java.io.*;
 import java.net.Socket;
+import java.util.Scanner;
 
-public class Client{
+public class Client {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        System.out.println("What is your name?");
-        String name = scanner.nextLine();
-        System.out.println("What port number do you want to connect to?");
-        int portNum = scanner.nextInt();
-        try(Socket clientSocket = new Socket("localhost", portNum)) {
-            System.out.println("Client started: Enter a math calculation");
-            // Set up streams
-            BufferedReader inFromUser = new BufferedReader(new InputStreamReader(System.in));
-            BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-            PrintWriter outFromClient = new PrintWriter(clientSocket.getOutputStream(), true);
 
-            String sentence;
-            while(!(sentence = inFromUser.readLine()).equalsIgnoreCase("exit")) {
-                outFromClient.println(name + ": " + sentence);
-                System.out.println("Response from server: " + inFromServer.readLine());
-                System.out.println("Enter a new message: ");
+        System.out.print("Enter your name: ");
+        String clientName = scanner.nextLine();
+
+        try (Socket socket = new Socket("localhost", 1234);
+             BufferedReader inFromServer = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+             PrintWriter outToServer = new PrintWriter(socket.getOutputStream(), true)) {
+
+            // Step 1: Send JOIN request and wait for acknowledgement
+            outToServer.println("JOIN:" + clientName);
+
+            String response = inFromServer.readLine();
+            if (response.startsWith("ACK:")) {
+                System.out.println("Server: " + response.substring(4));
             }
-            System.out.println("Exiting...");
+
+            // Thread to receive server responses
+            new Thread(() -> {
+                try {
+                    String serverMessage;
+                    while ((serverMessage = inFromServer.readLine()) != null) {
+                        if (serverMessage.startsWith("RESULT:")) {
+                            System.out.println("Result: " + serverMessage.substring(7));
+                        } else if (serverMessage.startsWith("ERROR:")) {
+                            System.out.println("Error: " + serverMessage.substring(6));
+                        } else if (serverMessage.startsWith("ACK:")) {
+                            System.out.println("Server: " + serverMessage.substring(4));
+                        }
+                    }
+                } catch (IOException e) {
+                    // Connection closed
+                }
+            }).start();
+
+            // Step 2: Send calculations
+            System.out.println("\nEnter calculations (type 'exit' to disconnect):");
+            String input;
+            while (scanner.hasNextLine()) {
+                input = scanner.nextLine();
+                if (input.equalsIgnoreCase("exit")) {
+                    break;
+                }
+                // Send calculation (just the expression, no "CALC:" prefix needed)
+                outToServer.println(input);
+            }
+
+            // Step 3: Send CLOSE request
+            outToServer.println("CLOSE");
+            Thread.sleep(500); // Wait for final acknowledgement
 
         } catch (Exception e) {
-            System.err.println("Exception error with client");
+            System.err.println("Client error: " + e.getMessage());
         }
+
+        scanner.close();
     }
 }
