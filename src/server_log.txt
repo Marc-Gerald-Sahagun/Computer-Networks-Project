@@ -94,3 +94,16 @@
 [2026-04-13 00:44:41] Marc: Disconnected. Session duration: 12 seconds
 [2026-04-13 00:55:30] Marc: Connected from /127.0.0.1
 [2026-04-13 00:55:32] Marc: Disconnected. Session duration: 1 seconds
+[2026-04-13 23:09:15] SERVER: Server started
+[2026-04-13 23:09:22] Marc: Connected from /127.0.0.1
+[2026-04-13 23:09:23] Marc: Sent calculation request: 2+5
+[2026-04-13 23:09:23] Marc: Calculation completed: 2+5 = 7.0
+[2026-04-13 23:09:25] Marc: Sent calculation request: 3_5
+[2026-04-13 23:09:25] Marc: Calculation completed: 3_5 = 5.0
+[2026-04-13 23:09:27] Marc: Sent calculation request: 3+5
+[2026-04-13 23:09:27] Marc: Calculation completed: 3+5 = 8.0
+[2026-04-13 23:09:33] Marc: Sent calculation request: 3_3
+[2026-04-13 23:09:33] Marc: Calculation completed: 3_3 = 3.0
+[2026-04-13 23:09:37] Marc: Sent calculation request: 3_6
+[2026-04-13 23:09:37] Marc: Calculation completed: 3_6 = 6.0
+[2026-04-13 23:09:41] Marc: Disconnected. Session duration: 18 seconds
