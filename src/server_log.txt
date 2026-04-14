@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 [2026-04-12 23:45:13] SERVER: Math Server started
 [2026-04-12 23:45:21] marc: Connected from /127.0.0.1
 [2026-04-12 23:45:25] marc: Sent calculation request: 5 + 3
@@ -107,3 +108,22 @@
 [2026-04-13 23:09:37] Marc: Sent calculation request: 3_6
 [2026-04-13 23:09:37] Marc: Calculation completed: 3_6 = 6.0
 [2026-04-13 23:09:41] Marc: Disconnected. Session duration: 18 seconds
+=======
+[2026-04-14 16:12:31] SERVER: Server started
+[2026-04-14 16:12:36] Marc: Connected from /127.0.0.1
+[2026-04-14 16:12:38] Marc: Sent calculation request: 2+2
+[2026-04-14 16:12:38] Marc: Calculation completed: 2+2 = 4.0
+[2026-04-14 16:12:40] Marc: Disconnected. Session duration: 3 seconds
+[2026-04-14 16:13:23] Todd: Connected from /127.0.0.1
+[2026-04-14 16:13:25] Todd: Sent calculation request: 5+5
+[2026-04-14 16:13:25] Todd: Calculation completed: 5+5 = 10.0
+[2026-04-14 16:13:39] Marc: Connected from /127.0.0.1
+[2026-04-14 16:13:43] Marc: Sent calculation request: 9*9
+[2026-04-14 16:13:43] Marc: Calculation completed: 9*9 = 81.0
+[2026-04-14 16:13:51] Fred: Connected from /127.0.0.1
+[2026-04-14 16:13:56] Fred: Sent calculation request: 6-2
+[2026-04-14 16:13:56] Fred: Calculation completed: 6-2 = 4.0
+[2026-04-14 16:14:09] Marc: Disconnected. Session duration: 30 seconds
+[2026-04-14 16:14:14] Todd: Disconnected. Session duration: 50 seconds
+[2026-04-14 16:14:18] Fred: Disconnected. Session duration: 26 seconds
+>>>>>>> c0b3568 (added modulus and paren support)

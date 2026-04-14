@@ -105,11 +105,27 @@ public class Server {
                 i--;
                 numbers.push(Double.parseDouble(num.toString()));
             }
-            else if (c == '+' || c == '-' || c == '*' || c == '/') {
-                while (!operators.isEmpty() && hasPrecedence(c, operators.peek())) {
+            else if (c == '(') {
+                operators.push(c);
+            }
+            else if (c == ')') {
+                while (operators.peek() != '(') {
                     numbers.push(applyOperation(operators.pop(), numbers.pop(), numbers.pop()));
                 }
-                operators.push(c);
+                operators.pop();
+            }
+            else if (c == '+' || c == '-' || c == '*' || c == '/' || c == '%') {
+                // Detect unary minus: occurs at start, after '(', or after another operator
+                if (c == '-' && (i == 0 || expression.charAt(i - 1) == '(' ||
+                        "+-*/%".indexOf(expression.charAt(i - 1)) >= 0)) {
+                    numbers.push(-1.0);
+                    operators.push('*');
+                } else {
+                    while (!operators.isEmpty() && operators.peek() != '(' && hasPrecedence(c, operators.peek())) {
+                        numbers.push(applyOperation(operators.pop(), numbers.pop(), numbers.pop()));
+                    }
+                    operators.push(c);
+                }
             }
         }
 
@@ -121,7 +137,7 @@ public class Server {
     }
 
     private static boolean hasPrecedence(char op1, char op2) {
-        if ((op1 == '*' || op1 == '/') && (op2 == '+' || op2 == '-')) return false;
+        if ((op1 == '*' || op1 == '/' || op1 == '%') && (op2 == '+' || op2 == '-')) return false;
         return true;
     }
 
@@ -133,6 +149,9 @@ public class Server {
             case '/':
                 if (b == 0) throw new ArithmeticException("Division by zero");
                 return a / b;
+            case '%':
+                if (b == 0) throw new ArithmeticException("Division by zero");
+                return a % b;
         }
         return 0;
     }
