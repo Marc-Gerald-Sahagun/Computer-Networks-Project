@@ -17,7 +17,7 @@ public class Client {
             outToServer.println("JOIN:" + clientName);
 
             String response = inFromServer.readLine();
-            if (response.startsWith("ACK:")) {
+            if (response.startsWith("ACK:")) {  // NPE if response is null
                 System.out.println("Server: " + response.substring(4));
             }
 

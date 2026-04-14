@@ -50,9 +50,7 @@ public class Server {
                     if (clientName != null) {
                         LocalDateTime disconnectTime = LocalDateTime.now();
                         long duration = java.time.Duration.between(connectTime, disconnectTime).toSeconds();
-
                         outFromServer.println("ACK:Connection closed. Goodbye " + clientName + "!");
-
                         logActivity(clientName, "Disconnected. Session duration: " + duration + " seconds");
                         System.out.println("Client " + clientName + " disconnected. Duration: " + duration + " seconds");
                         break;
@@ -63,7 +61,7 @@ public class Server {
                         String expression = sentence.trim();
 
                         logActivity(clientName, "Sent calculation request: " + expression);
-                        System.out.println("Message received from Client " + clientName + ": " + expression);
+                        System.out.println("Message received from client " + clientName + ": " + expression);
 
                         try {
                             double result = evaluateExpression(expression);
