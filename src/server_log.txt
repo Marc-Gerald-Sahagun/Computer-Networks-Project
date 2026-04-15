@@ -127,3 +127,18 @@
 [2026-04-14 16:14:14] Todd: Disconnected. Session duration: 50 seconds
 [2026-04-14 16:14:18] Fred: Disconnected. Session duration: 26 seconds
 >>>>>>> c0b3568 (added modulus and paren support)
+[2026-04-14 16:27:12] SERVER: Server started
+[2026-04-14 16:27:21] Marc: Connected from /127.0.0.1
+[2026-04-14 16:27:25] Marc: Sent calculation request: 2+2
+[2026-04-14 16:27:25] Marc: Calculation completed: 2+2 = 4.0
+[2026-04-14 16:27:38] Fred: Connected from /127.0.0.1
+[2026-04-14 16:27:40] Fred: Sent calculation request: 5*5
+[2026-04-14 16:27:40] Fred: Calculation completed: 5*5 = 25.0
+[2026-04-14 16:27:46] Marc: Disconnected. Session duration: 24 seconds
+[2026-04-14 16:27:52] Fred: Disconnected. Session duration: 13 seconds
+[2026-04-14 16:33:44] SERVER: Server started
+[2026-04-14 16:34:05] Mar: Connected from /127.0.0.1
+[2026-04-14 16:39:42] Mar: Disconnected. Session duration: 336 seconds
+[2026-04-14 16:39:52] 123: Connected from /127.0.0.1
+[2026-04-14 16:39:57] 123: Disconnected. Session duration: 5 seconds
+[2026-04-14 16:40:01] 2+2: Connected from /127.0.0.1

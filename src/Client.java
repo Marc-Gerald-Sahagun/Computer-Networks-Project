@@ -9,9 +9,9 @@ public class Client {
         System.out.print("Enter your name: ");
         String clientName = scanner.nextLine();
 
-        try (Socket socket = new Socket("localhost", 1234);
-             BufferedReader inFromServer = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-             PrintWriter outToServer = new PrintWriter(socket.getOutputStream(), true)) {
+        try (Socket clientConnection = new Socket("localhost", 1234);
+             BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientConnection.getInputStream()));
+             PrintWriter outToServer = new PrintWriter(clientConnection.getOutputStream(), true)) {
 
             // Step 1: Send JOIN request and wait for acknowledgement
             outToServer.println("JOIN:" + clientName);
