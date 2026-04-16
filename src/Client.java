@@ -9,37 +9,38 @@ public class Client {
         System.out.print("Enter your name: ");
         String clientName = scanner.nextLine();
 
+        // connect to the server — streams auto-close when the try block exits
         try (Socket clientConnection = new Socket("localhost", 1234);
              BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientConnection.getInputStream()));
-             PrintWriter outToServer = new PrintWriter(clientConnection.getOutputStream(), true)) {
+             PrintWriter outToServer = new PrintWriter(clientConnection.getOutputStream(), true)) { // true = auto-flush
 
-            // Step 1: Send JOIN request and wait for acknowledgement
+            // Step Send JOIN request and wait for acknowledgement
             outToServer.println("JOIN:" + clientName);
 
             String response = inFromServer.readLine();
             if (response != null && response.startsWith("ACK:")) {
-                System.out.println("Server: " + response.substring(4));
+                System.out.println("Server: " + response.substring(4)); // strip the "ACK:" prefix before printing
             }
 
-            // Thread to receive server responses
+            // separate thread to listen for server responses so it doesn't block user input
             new Thread(() -> {
                 try {
                     String serverMessage;
                     while ((serverMessage = inFromServer.readLine()) != null) {
                         if (serverMessage.startsWith("RESULT:")) {
-                            System.out.println("Result: " + serverMessage.substring(7));
+                            System.out.println("Result: " + serverMessage.substring(7)); // strip "RESULT:"
                         } else if (serverMessage.startsWith("ERROR:")) {
-                            System.out.println("Error: " + serverMessage.substring(6));
+                            System.out.println("Error: " + serverMessage.substring(6)); // strip "ERROR:"
                         } else if (serverMessage.startsWith("ACK:")) {
-                            System.out.println("Server: " + serverMessage.substring(4));
+                            System.out.println("Server: " + serverMessage.substring(4)); // strip "ACK:"
                         }
                     }
                 } catch (IOException e) {
-                    // Connection closed
+                    // connection closed, thread exits naturally
                 }
             }).start();
 
-            // Step 2: Send calculations
+            // Send calculations
             System.out.println("\nEnter calculations (type 'exit' to disconnect):");
             String input;
             while (scanner.hasNextLine()) {
@@ -47,13 +48,12 @@ public class Client {
                 if (input.equalsIgnoreCase("exit")) {
                     break;
                 }
-                // Send calculation (just the expression, no "CALC:" prefix needed)
-                outToServer.println(input);
+                outToServer.println(input); // send the expression directly, server handles the parsing
             }
 
-            // Step 3: Send CLOSE request
+            // Send CLOSE request
             outToServer.println("CLOSE");
-            Thread.sleep(500); // Wait for final acknowledgement
+            Thread.sleep(500); // give the server a moment to send back the final ACK before closing
 
         } catch (Exception e) {
             System.err.println("Client error: " + e.getMessage());
