@@ -9,7 +9,7 @@ public class Client {
         System.out.print("Enter your name: ");
         String clientName = scanner.nextLine();
 
-        // connect to the server — streams auto-close when the try block exits
+        // connect to the server streams auto close when the try block exits
         try (Socket clientConnection = new Socket("localhost", 1234);
              BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientConnection.getInputStream()));
              PrintWriter outToServer = new PrintWriter(clientConnection.getOutputStream(), true)) { // true = auto-flush

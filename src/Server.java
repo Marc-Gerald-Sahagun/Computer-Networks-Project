@@ -113,7 +113,7 @@ public class Server {
         // clean up streams and log the disconnect with session duration
         private void closeConnection() {
             try {
-                long duration = java.time.Duration.between(connectionTime, LocalDateTime.now()).toSeconds();
+                long duration = java.time.Duration.between(connectionTime, LocalDateTime.now()).toSeconds(); //how long the client was connected
                 clientCounter--;
 
                 System.out.println("==============================================");
@@ -122,9 +122,9 @@ public class Server {
                 System.out.println("Number of clients: " + clientCounter);
                 System.out.println("Connection Duration: " + duration + " seconds");
                 System.out.println("==============================================");
-                logActivity(clientName, "Disconnected. Session duration: " + duration + " seconds");
+                logActivity(clientName, "Disconnected. Session duration: " + duration + " seconds"); // write to log file
 
-                // close everything — null checks in case the connection failed before they were opened
+                // close everything  null checks in case the connection failed before they were opened
                 if (inFromClient != null) inFromClient.close();
                 if (outFromServer != null) outFromServer.close();
                 if (socket != null) socket.close();
@@ -209,10 +209,10 @@ public class Server {
             numbers.push(applyOperation(operators.pop(), numbers.pop(), numbers.pop()));
         }
 
-        return numbers.pop();
+        return numbers.pop(); // final answer, should be the only thing left in the stack
     }
 
-    // returns false if op1 should be pushed without applying op2 first (i.e. op1 has higher precedence)
+    // returns false if op1 should be pushed without applying op2 first 
     private static boolean hasPrecedence(char op1, char op2) {
         if ((op1 == '*' || op1 == '/' || op1 == '%') && (op2 == '+' || op2 == '-')) return false;
         return true;
@@ -231,6 +231,6 @@ public class Server {
                 if (b == 0) throw new ArithmeticException("Division by zero");
                 return a % b;
         }
-        return 0;
+        return 0; // case if expression is invalid
     }
 }
