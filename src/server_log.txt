@@ -142,3 +142,6 @@
 [2026-04-14 16:39:52] 123: Connected from /127.0.0.1
 [2026-04-14 16:39:57] 123: Disconnected. Session duration: 5 seconds
 [2026-04-14 16:40:01] 2+2: Connected from /127.0.0.1
+[2026-04-15 13:34:39] 2+2: Disconnected. Session duration: 75278 seconds
+[2026-04-16 11:29:24] SERVER: Server started
+[2026-04-16 11:29:49] SERVER: Server started

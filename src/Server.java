@@ -11,7 +11,7 @@ public class Server {
     private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     public static void main(String[] args) {
-        ExecutorService threadPool = Executors.newFixedThreadPool(10);
+        ExecutorService threadPool = Executors.newFixedThreadPool(5);
 
         try (ServerSocket welcomeSocket = new ServerSocket(1234)) {
             System.out.println("Server is online!");
@@ -115,7 +115,7 @@ public class Server {
                 operators.pop();
             }
             else if (c == '+' || c == '-' || c == '*' || c == '/' || c == '%') {
-                // Detect unary minus: occurs at start, after '(', or after another operator
+                // Detect negative number: occurs at start, after '(', or after another operator
                 if (c == '-' && (i == 0 || expression.charAt(i - 1) == '(' ||
                         "+-*/%".indexOf(expression.charAt(i - 1)) >= 0)) {
                     numbers.push(-1.0);
@@ -132,7 +132,6 @@ public class Server {
         while (!operators.isEmpty()) {
             numbers.push(applyOperation(operators.pop(), numbers.pop(), numbers.pop()));
         }
-
         return numbers.pop();
     }
 
